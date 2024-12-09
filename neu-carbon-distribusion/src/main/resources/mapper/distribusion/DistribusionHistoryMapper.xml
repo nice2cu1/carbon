@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.neu.carbon.distribusion.mapper.DistribusionHistoryMapper">
+    
+    <resultMap type="DistribusionHistory" id="DistribusionHistoryResult">
+        <result property="id"    column="id"    />
+        <result property="enterpriseId"    column="enterprise_id"    />
+        <result property="year"    column="year"    />
+        <result property="totalEmission"    column="total_emission"    />
+        <result property="avgMonthlyEmission"    column="avg_monthly_emission"    />
+    </resultMap>
+
+    <sql id="selectDistribusionHistoryVo">
+        select id, enterprise_id, year, total_emission, avg_monthly_emission from distribusion_history
+    </sql>
+
+    <select id="selectDistribusionHistoryList" parameterType="DistribusionHistory" resultMap="DistribusionHistoryResult">
+        <include refid="selectDistribusionHistoryVo"/>
+        <where>  
+            <if test="enterpriseId != null "> and enterprise_id = #{enterpriseId}</if>
+            <if test="year != null  and year != ''"> and year = #{year}</if>
+            <if test="totalEmission != null  and totalEmission != ''"> and total_emission = #{totalEmission}</if>
+            <if test="avgMonthlyEmission != null  and avgMonthlyEmission != ''"> and avg_monthly_emission = #{avgMonthlyEmission}</if>
+        </where>
+    </select>
+    
+    <select id="selectDistribusionHistoryById" parameterType="Long" resultMap="DistribusionHistoryResult">
+        <include refid="selectDistribusionHistoryVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertDistribusionHistory" parameterType="DistribusionHistory">
+        insert into distribusion_history
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="enterpriseId != null">enterprise_id,</if>
+            <if test="year != null and year != ''">year,</if>
+            <if test="totalEmission != null and totalEmission != ''">total_emission,</if>
+            <if test="avgMonthlyEmission != null and avgMonthlyEmission != ''">avg_monthly_emission,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="enterpriseId != null">#{enterpriseId},</if>
+            <if test="year != null and year != ''">#{year},</if>
+            <if test="totalEmission != null and totalEmission != ''">#{totalEmission},</if>
+            <if test="avgMonthlyEmission != null and avgMonthlyEmission != ''">#{avgMonthlyEmission},</if>
+         </trim>
+    </insert>
+
+    <update id="updateDistribusionHistory" parameterType="DistribusionHistory">
+        update distribusion_history
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="enterpriseId != null">enterprise_id = #{enterpriseId},</if>
+            <if test="year != null and year != ''">year = #{year},</if>
+            <if test="totalEmission != null and totalEmission != ''">total_emission = #{totalEmission},</if>
+            <if test="avgMonthlyEmission != null and avgMonthlyEmission != ''">avg_monthly_emission = #{avgMonthlyEmission},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteDistribusionHistoryById" parameterType="Long">
+        delete from distribusion_history where id = #{id}
+    </delete>
+
+    <delete id="deleteDistribusionHistoryByIds" parameterType="String">
+        delete from distribusion_history where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

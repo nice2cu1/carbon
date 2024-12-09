@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.neu.carbon.distribusion.mapper.DistribusionMethodMapper">
+    
+    <resultMap type="DistribusionMethod" id="DistribusionMethodResult">
+        <result property="id"    column="id"    />
+        <result property="name"    column="name"    />
+        <result property="ratio"    column="ratio"    />
+    </resultMap>
+
+    <sql id="selectDistribusionMethodVo">
+        select id, name, ratio from distribusion_method
+    </sql>
+
+    <select id="selectDistribusionMethodList" parameterType="DistribusionMethod" resultMap="DistribusionMethodResult">
+        <include refid="selectDistribusionMethodVo"/>
+        <where>  
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="ratio != null  and ratio != ''"> and ratio = #{ratio}</if>
+        </where>
+    </select>
+    
+    <select id="selectDistribusionMethodById" parameterType="Long" resultMap="DistribusionMethodResult">
+        <include refid="selectDistribusionMethodVo"/>
+        where id = #{id}
+    </select>
+
+    <select id="selectDistribusionMethodByName" parameterType="String" resultMap="DistribusionMethodResult">
+        <include refid="selectDistribusionMethodVo"/>
+        where name = #{name}
+    </select>
+        
+    <insert id="insertDistribusionMethod" parameterType="DistribusionMethod">
+        insert into distribusion_method
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="name != null">name,</if>
+            <if test="ratio != null">ratio,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="name != null">#{name},</if>
+            <if test="ratio != null">#{ratio},</if>
+         </trim>
+    </insert>
+
+    <update id="updateDistribusionMethod" parameterType="DistribusionMethod">
+        update distribusion_method
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="name != null">name = #{name},</if>
+            <if test="ratio != null">ratio = #{ratio},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteDistribusionMethodById" parameterType="Long">
+        delete from distribusion_method where id = #{id}
+    </delete>
+
+    <delete id="deleteDistribusionMethodByIds" parameterType="String">
+        delete from distribusion_method where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

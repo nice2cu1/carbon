@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.neu.carbon.chat.mapper.ChatMessageHistoryMapper">
+    
+    <resultMap type="ChatMessageHistory" id="ChatMessageHistoryResult">
+        <result property="messageid"    column="messageId"    />
+        <result property="identity"    column="identity"    />
+        <result property="event"    column="event"    />
+        <result property="recipient"    column="recipient"    />
+        <result property="content"    column="content"    />
+        <result property="sendname"    column="sendName"    />
+        <result property="senderavatar"    column="senderAvatar"    />
+        <result property="id"    column="id"    />
+        <result property="number"    column="number"    />
+        <result property="messageTime"    column="message_time"    />
+    </resultMap>
+
+    <sql id="selectChatMessageHistoryVo">
+        select messageId, identity, event, recipient, content, sendName, senderAvatar, id, number, message_time from chat_message_history
+    </sql>
+
+    <select id="selectChatMessageHistoryList" parameterType="ChatMessageHistory" resultMap="ChatMessageHistoryResult">
+        <include refid="selectChatMessageHistoryVo"/>
+        <where>  
+            <if test="identity != null  and identity != ''"> and identity = #{identity}</if>
+            <if test="event != null  and event != ''"> and event = #{event}</if>
+            <if test="recipient != null  and recipient != ''"> and recipient = #{recipient}</if>
+            <if test="content != null  and content != ''"> and content = #{content}</if>
+            <if test="sendname != null  and sendname != ''"> and sendName like concat('%', #{sendname}, '%')</if>
+            <if test="senderavatar != null  and senderavatar != ''"> and senderAvatar = #{senderavatar}</if>
+            <if test="number != null "> and number = #{number}</if>
+            <if test="messageTime != null "> and message_time = #{messageTime}</if>
+        </where>
+    </select>
+    
+    <select id="selectChatMessageHistoryById" parameterType="Long" resultMap="ChatMessageHistoryResult">
+        <include refid="selectChatMessageHistoryVo"/>
+        where messageId = #{messageid}
+    </select>
+        
+    <insert id="insertChatMessageHistory" parameterType="ChatMessageHistory" useGeneratedKeys="true" keyProperty="messageid">
+        insert into chat_message_history
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="identity != null">identity,</if>
+            <if test="event != null">event,</if>
+            <if test="recipient != null">recipient,</if>
+            <if test="content != null">content,</if>
+            <if test="sendname != null">sendName,</if>
+            <if test="senderavatar != null">senderAvatar,</if>
+            <if test="id != null">id,</if>
+            <if test="number != null">number,</if>
+            <if test="messageTime != null">message_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="identity != null">#{identity},</if>
+            <if test="event != null">#{event},</if>
+            <if test="recipient != null">#{recipient},</if>
+            <if test="content != null">#{content},</if>
+            <if test="sendname != null">#{sendname},</if>
+            <if test="senderavatar != null">#{senderavatar},</if>
+            <if test="id != null">#{id},</if>
+            <if test="number != null">#{number},</if>
+            <if test="messageTime != null">#{messageTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateChatMessageHistory" parameterType="ChatMessageHistory">
+        update chat_message_history
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="identity != null">identity = #{identity},</if>
+            <if test="event != null">event = #{event},</if>
+            <if test="recipient != null">recipient = #{recipient},</if>
+            <if test="content != null">content = #{content},</if>
+            <if test="sendname != null">sendName = #{sendname},</if>
+            <if test="senderavatar != null">senderAvatar = #{senderavatar},</if>
+            <if test="id != null">id = #{id},</if>
+            <if test="number != null">number = #{number},</if>
+            <if test="messageTime != null">message_time = #{messageTime},</if>
+        </trim>
+        where messageId = #{messageid}
+    </update>
+
+    <delete id="deleteChatMessageHistoryById" parameterType="Long">
+        delete from chat_message_history where messageId = #{messageid}
+    </delete>
+
+    <delete id="deleteChatMessageHistoryByIds" parameterType="String">
+        delete from chat_message_history where messageId in 
+        <foreach item="messageid" collection="array" open="(" separator="," close=")">
+            #{messageid}
+        </foreach>
+    </delete>
+</mapper>

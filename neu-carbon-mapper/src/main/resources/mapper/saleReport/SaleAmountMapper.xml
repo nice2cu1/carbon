@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.neu.carbon.report.mapper.SaleAmountMapper">
+
+    <resultMap type="java.util.HashMap" id="VSaleAmountResult">
+        <result property="signDate" column="sign_date"/>
+        <result property="totalContractAmount" column="total_contract_amount"/>
+        <result property="totalSaleAmount" column="total_sale_amount"/>
+    </resultMap>
+
+    <select id="selectSaleAmount" resultMap="VSaleAmountResult">
+        SELECT
+            date_format( str_to_date( `sale_contract`.`sign_date`, '%m/%d/%Y' ), '%Y-%m' ) AS `sign_date`,
+            sum( `sale_contract`.`contract_amount` ) AS `total_contract_amount`,(
+                    sum( `sale_order`.`order_amount` ) - sum( `sale_return`.`return_amount` )) AS `total_sale_amount`
+        FROM
+            (((
+                `sale_customer`
+                    JOIN `sale_order` ON ((
+                    `sale_customer`.`id` = `sale_order`.`customer_id`
+                    )))
+                JOIN `sale_contract` ON ((
+                `sale_order`.`order_no` = `sale_contract`.`order_no`
+                )))
+                LEFT JOIN `sale_return` ON ((
+                `sale_contract`.`contract_no` = `sale_return`.`contract_no`
+                )))
+        GROUP BY
+            date_format(
+                    str_to_date( `sale_contract`.`sign_date`, '%m/%d/%Y' ),
+                    '%Y-%m')
+    </select>
+
+
+</mapper>

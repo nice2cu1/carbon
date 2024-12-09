@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.neu.carbon.distribusion.mapper.DistribusionMessageMapper">
+    
+    <resultMap type="DistribusionMessage" id="DistribusionMessageResult">
+        <result property="id"    column="id"    />
+        <result property="status"    column="status"    />
+        <result property="message"    column="message"    />
+        <result property="type"    column="type"    />
+        <result property="enterpriseId" column="enterprise_id" />
+        <result property="createTime"    column="create_time"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="updateBy"    column="update_by"    />
+    </resultMap>
+
+    <sql id="selectDistribusionMessageVo">
+        select id, enterprise_id, status, message, type, create_time, create_by, update_time, update_by from distribusion_message
+    </sql>
+
+    <select id="selectDistribusionMessageList" parameterType="DistribusionMessage" resultMap="DistribusionMessageResult">
+        <include refid="selectDistribusionMessageVo"/>
+        <where>  
+            <if test="status != null "> and status = #{status}</if>
+            <if test="type != null "> and type = #{type}</if>
+        </where>
+    </select>
+
+    <select id="selectMessageList" parameterType="DistribusionMessage" resultMap="DistribusionMessageResult">
+        <include refid="selectDistribusionMessageVo"/>
+        <where>
+            <if test="status != null "> and status = #{status}</if>
+            <if test="type != null "> and type = #{type}</if>
+            <if test="enterpriseId != null "> and enterprise_id = #{enterpriseId} or enterprise_id is null</if>
+        </where>
+    </select>
+    
+    <select id="selectDistribusionMessageById" parameterType="Long" resultMap="DistribusionMessageResult">
+        <include refid="selectDistribusionMessageVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertDistribusionMessage" parameterType="DistribusionMessage" useGeneratedKeys="true" keyProperty="id">
+        insert into distribusion_message
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="status != null">status,</if>
+            <if test="message != null">message,</if>
+            <if test="type != null">type,</if>
+            <if test="enterpriseId != null">enterprise_id,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="updateBy != null">update_by,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="status != null">#{status},</if>
+            <if test="message != null">#{message},</if>
+            <if test="type != null">#{type},</if>
+            <if test="enterpriseId != null">#{enterpriseId},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+         </trim>
+    </insert>
+
+    <update id="updateDistribusionMessage" parameterType="DistribusionMessage">
+        update distribusion_message
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="status != null">status = #{status},</if>
+            <if test="message != null">message = #{message},</if>
+            <if test="type != null">type = #{type},</if>
+            <if test="enterpriseId != null">enterprise_id = #{enterpriseId},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteDistribusionMessageById" parameterType="Long">
+        delete from distribusion_message where id = #{id}
+    </delete>
+
+    <delete id="deleteDistribusionMessageByIds" parameterType="String">
+        delete from distribusion_message where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.neu.carbon.distribusion.mapper.DistribusionEmissionCalMapper">
+
+    <resultMap type="DistribusionEmissionCal" id="DistribusionEmissionCalResult">
+        <result property="id"    column="id"    />
+        <result property="type"    column="type"    />
+        <result property="money"    column="money"    />
+        <result property="amount"    column="amount"    />
+        <result property="suitable"    column="suitable"    />
+        <result property="status"    column="status"    />
+        <result property="enterpriseId"    column="enterprise_id"    />
+        <result property="emissionNo"    column="emission_no"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+        <result property="suitableLabel"    column="suitable_label"    />
+    </resultMap>
+
+    <sql id="selectDistribusionEmissionCalVo">
+        select id,enterprise_id,suitable,emission_no,type,money,amount,status,create_by,create_time,update_by,update_time from distribusion_emission_cal
+    </sql>
+
+    <select id="selectDistribusionEmissionCalList" parameterType="DistribusionEmissionCal" resultMap="DistribusionEmissionCalResult">
+        <include refid="selectDistribusionEmissionCalVo"/>
+        <where>
+            <if test="type != null  and type != ''"> and type = #{type}</if>
+            <if test="status != null  and status != ''"> and status = #{status}</if>
+            <if test="enterpriseId != null "> and enterprise_id = #{enterpriseId}</if>
+        </where>
+        ORDER BY create_time desc
+    </select>
+
+    <select id="selectDistribusionEmissionCalAppList" parameterType="DistribusionEmissionCal" resultMap="DistribusionEmissionCalResult">
+        select
+            id,
+            enterprise_id,
+            suitable,
+            (select dict_label from sys_dict_data where dict_type = 'industry_list' and dict_value = suitable) suitable_label,
+            emission_no,
+            type,
+            money,
+            amount,
+            status,
+            create_by,
+            create_time,
+            update_by,
+            update_time
+        from distribusion_emission_cal
+        <where>
+            <if test="type != null  and type != ''"> and type = #{type}</if>
+            <if test="status != null  and status != ''"> and status = #{status}</if>
+            <if test="enterpriseId != null "> and enterprise_id = #{enterpriseId}</if>
+        </where>
+        ORDER BY create_time desc
+    </select>
+
+    <select id="selectDistribusionEmissionCalById" parameterType="Long" resultMap="DistribusionEmissionCalResult">
+        <include refid="selectDistribusionEmissionCalVo"/>
+        where id = #{id}
+    </select>
+
+    <select id="getInfoByEnterpriceId" resultType="com.neu.carbon.distribusion.domain.DistribusionEmissionCal">
+        select
+            sum(cal.last_emission) as'remainingAmount',
+            credit.credit as 'totalAmount'
+        from distribusion_emission_cal cal left join distribusion_credit credit on credit.enterprise_id = cal.enterprise_id
+        where cal.enterprise_id = 1
+    </select>
+
+
+    <insert id="insertDistribusionEmissionCal" parameterType="DistribusionEmissionCal" useGeneratedKeys="true" keyProperty="id">
+        insert into distribusion_emission_cal
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="emissionNo != null">emission_no,</if>
+            <if test="type != null and type != ''">type,</if>
+            <if test="money != null">money,</if>
+            <if test="amount != null">amount,</if>
+            <if test="suitable != null">suitable,</if>
+            <if test="status != null">status,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="enterpriseId != null">enterprise_id,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="updateBy != null">update_by,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="emissionNo != null">#{emissionNo},</if>
+            <if test="type != null and type != ''">#{type},</if>
+            <if test="money != null">#{money},</if>
+            <if test="amount != null">#{amount},</if>
+            <if test="suitable != null">#{suitable},</if>
+            <if test="status != null">#{status},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="enterpriseId != null">#{enterpriseId},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+        </trim>
+    </insert>
+
+    <update id="updateDistribusionEmissionCal" parameterType="DistribusionEmissionCal">
+        update distribusion_emission_cal
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="emissionNo != null">emission_no = #{emissionNo},</if>
+            <if test="type != null and type != ''">type = #{type},</if>
+            <if test="money != null">money = #{money},</if>
+            <if test="amount != null">amount = #{amount},</if>
+            <if test="suitable != null">suitable = #{suitable},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="enterpriseId != null">enterprise_id = #{enterpriseId},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteDistribusionEmissionCalById" parameterType="Long">
+        delete from distribusion_emission_cal where id = #{id}
+    </delete>
+
+    <delete id="deleteDistribusionEmissionCalByIds" parameterType="String">
+        delete from distribusion_emission_cal where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

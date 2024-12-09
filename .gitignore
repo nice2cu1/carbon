@@ -1,0 +1,17 @@
+# 项目排除路径
+/neu-admin/target/
+/neu-carbon-bid/target/
+/neu-carbon-chat/target/
+/neu-carbon-distribusion/target/
+/neu-carbon-footprint/target/
+/neu-carbon-mapper/target/
+/neu-carbon-mes/target/
+/neu-carbon-report/target/
+/neu-carbon-scm/target/
+/neu-carbon-service/target/
+/neu-carbon-wms/target/
+/neu-common/target/
+/neu-common-biz/target/
+/neu-framework/target/
+/neu-quartz/target/
+/neu-system/target/

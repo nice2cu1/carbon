@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.neu.carbon.chat.mapper.ChatQaMapper">
+    
+    <resultMap type="ChatQa" id="ChatQaResult">
+        <result property="id"    column="id"    />
+        <result property="question"    column="question"    />
+        <result property="answer"    column="answer"    />
+    </resultMap>
+
+    <sql id="selectChatQaVo">
+        select id, question, answer from chat_qa
+    </sql>
+
+    <select id="selectChatQaList" parameterType="ChatQa" resultMap="ChatQaResult">
+        <include refid="selectChatQaVo"/>
+        <where>  
+            <if test="question != null  and question != ''"> and question = #{question}</if>
+            <if test="answer != null  and answer != ''"> and answer = #{answer}</if>
+        </where>
+    </select>
+
+    <select id="selectChatQaById" parameterType="Long" resultMap="ChatQaResult">
+        <include refid="selectChatQaVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertChatQa" parameterType="ChatQa">
+        insert into chat_qa
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="question != null">question,</if>
+            <if test="answer != null">answer,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="question != null">#{question},</if>
+            <if test="answer != null">#{answer},</if>
+         </trim>
+    </insert>
+
+    <update id="updateChatQa" parameterType="ChatQa">
+        update chat_qa
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="question != null">question = #{question},</if>
+            <if test="answer != null">answer = #{answer},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteChatQaById" parameterType="Long">
+        delete from chat_qa where id = #{id}
+    </delete>
+
+    <delete id="deleteChatQaByIds" parameterType="String">
+        delete from chat_qa where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

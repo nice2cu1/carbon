@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.neu.carbon.distribusion.mapper.DistribusionProductMapper">
+    
+    <resultMap type="DistribusionProduct" id="DistribusionProductResult">
+        <result property="id"    column="id"    />
+        <result property="suitable"    column="suitable"    />
+        <result property="credit"    column="credit"    />
+        <result property="price"    column="price"    />
+        <result property="detail"    column="detail"    />
+    </resultMap>
+
+    <sql id="selectDistribusionProductVo">
+        select id, suitable, credit, price, detail from distribusion_product
+    </sql>
+
+    <select id="selectDistribusionProductList" parameterType="DistribusionProduct" resultMap="DistribusionProductResult">
+        <include refid="selectDistribusionProductVo"/>
+        <where>  
+            <if test="suitable != null  and suitable != ''"> and suitable = #{suitable}</if>
+            <if test="credit != null  and credit != ''"> and credit = #{credit}</if>
+            <if test="price != null  and price != ''"> and price = #{price}</if>
+            <if test="detail != null  and detail != ''"> and detail = #{detail}</if>
+        </where>
+    </select>
+    
+    <select id="selectDistribusionProductById" parameterType="Long" resultMap="DistribusionProductResult">
+        <include refid="selectDistribusionProductVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertDistribusionProduct" parameterType="DistribusionProduct">
+        insert into distribusion_product
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="suitable != null">suitable,</if>
+            <if test="credit != null">credit,</if>
+            <if test="price != null">price,</if>
+            <if test="detail != null">detail,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="suitable != null">#{suitable},</if>
+            <if test="credit != null">#{credit},</if>
+            <if test="price != null">#{price},</if>
+            <if test="detail != null">#{detail},</if>
+         </trim>
+    </insert>
+
+    <update id="updateDistribusionProduct" parameterType="DistribusionProduct">
+        update distribusion_product
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="suitable != null">suitable = #{suitable},</if>
+            <if test="credit != null">credit = #{credit},</if>
+            <if test="price != null">price = #{price},</if>
+            <if test="detail != null">detail = #{detail},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteDistribusionProductById" parameterType="Long">
+        delete from distribusion_product where id = #{id}
+    </delete>
+
+    <delete id="deleteDistribusionProductByIds" parameterType="String">
+        delete from distribusion_product where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

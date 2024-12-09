@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.neu.carbon.bid.mapper.BidOrderRefundRecordMapper">
+    
+    <resultMap type="BidOrderRefundRecord" id="BidOrderRefundRecordResult">
+        <result property="id"    column="id"    />
+        <result property="orderId"    column="order_id"    />
+        <result property="refundPrice"    column="refund_price"    />
+        <result property="refundReason"    column="refund_reason"    />
+        <result property="refundDescription"    column="refund_description"    />
+        <result property="refundTime"    column="refund_time"    />
+        <result property="checkUserId"    column="check_user_id"    />
+        <result property="checkUserName"    column="check_user_name"    />
+        <result property="checkStatus"    column="check_status"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectBidOrderRefundRecordVo">
+        select id, order_id, refund_price, refund_reason, refund_description, refund_time, check_user_id, check_user_name, check_status, create_by, create_time, update_by, update_time from bid_order_refund_record
+    </sql>
+
+    <select id="selectBidOrderRefundRecordList" parameterType="BidOrderRefundRecord" resultMap="BidOrderRefundRecordResult">
+        <include refid="selectBidOrderRefundRecordVo"/>
+        <where>  
+            <if test="orderId != null "> and order_id = #{orderId}</if>
+            <if test="refundPrice != null "> and refund_price = #{refundPrice}</if>
+            <if test="refundReason != null "> and refund_reason = #{refundReason}</if>
+            <if test="refundDescription != null  and refundDescription != ''"> and refund_description = #{refundDescription}</if>
+            <if test="refundTime != null "> and refund_time = #{refundTime}</if>
+            <if test="checkUserId != null "> and check_user_id = #{checkUserId}</if>
+            <if test="checkUserName != null  and checkUserName != ''"> and check_user_name like concat('%', #{checkUserName}, '%')</if>
+            <if test="checkStatus != null "> and check_status = #{checkStatus}</if>
+        </where>
+    </select>
+    
+    <select id="selectBidOrderRefundRecordById" parameterType="Long" resultMap="BidOrderRefundRecordResult">
+        <include refid="selectBidOrderRefundRecordVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertBidOrderRefundRecord" parameterType="BidOrderRefundRecord">
+        insert into bid_order_refund_record
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="orderId != null">order_id,</if>
+            <if test="refundPrice != null">refund_price,</if>
+            <if test="refundReason != null">refund_reason,</if>
+            <if test="refundDescription != null">refund_description,</if>
+            <if test="refundTime != null">refund_time,</if>
+            <if test="checkUserId != null">check_user_id,</if>
+            <if test="checkUserName != null">check_user_name,</if>
+            <if test="checkStatus != null">check_status,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="orderId != null">#{orderId},</if>
+            <if test="refundPrice != null">#{refundPrice},</if>
+            <if test="refundReason != null">#{refundReason},</if>
+            <if test="refundDescription != null">#{refundDescription},</if>
+            <if test="refundTime != null">#{refundTime},</if>
+            <if test="checkUserId != null">#{checkUserId},</if>
+            <if test="checkUserName != null">#{checkUserName},</if>
+            <if test="checkStatus != null">#{checkStatus},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateBidOrderRefundRecord" parameterType="BidOrderRefundRecord">
+        update bid_order_refund_record
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="orderId != null">order_id = #{orderId},</if>
+            <if test="refundPrice != null">refund_price = #{refundPrice},</if>
+            <if test="refundReason != null">refund_reason = #{refundReason},</if>
+            <if test="refundDescription != null">refund_description = #{refundDescription},</if>
+            <if test="refundTime != null">refund_time = #{refundTime},</if>
+            <if test="checkUserId != null">check_user_id = #{checkUserId},</if>
+            <if test="checkUserName != null">check_user_name = #{checkUserName},</if>
+            <if test="checkStatus != null">check_status = #{checkStatus},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteBidOrderRefundRecordById" parameterType="Long">
+        delete from bid_order_refund_record where id = #{id}
+    </delete>
+
+    <delete id="deleteBidOrderRefundRecordByIds" parameterType="String">
+        delete from bid_order_refund_record where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

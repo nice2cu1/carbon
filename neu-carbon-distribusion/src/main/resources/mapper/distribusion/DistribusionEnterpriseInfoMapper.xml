@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.neu.carbon.distribusion.mapper.DistribusionEnterpriseInfoMapper">
+    
+    <resultMap type="DistribusionEnterpriseInfo" id="DistribusionEnterpriseInfoResult">
+        <result property="id"    column="id"    />
+        <result property="industry"    column="industry"    />
+        <result property="enterpriseId"    column="enterprise_id"    />
+        <result property="productCategory"    column="product_category"    />
+        <result property="production"    column="production"    />
+        <result property="enterpriseScale"    column="enterprise_scale"    />
+        <result property="enterpriseNature"    column="enterprise_nature"    />
+    </resultMap>
+
+    <sql id="selectDistribusionEnterpriseInfoVo">
+        select id, industry, enterprise_id, product_category, production, enterprise_scale, enterprise_nature from distribusion_enterprise_info
+    </sql>
+
+    <select id="selectDistribusionEnterpriseInfoList" parameterType="DistribusionEnterpriseInfo" resultMap="DistribusionEnterpriseInfoResult">
+        <include refid="selectDistribusionEnterpriseInfoVo"/>
+        <where>  
+            <if test="industry != null  and industry != ''"> and industry = #{industry}</if>
+            <if test="enterpriseId != null "> and enterprise_id = #{enterpriseId}</if>
+            <if test="productCategory != null  and productCategory != ''"> and product_category = #{productCategory}</if>
+            <if test="production != null  and production != ''"> and production = #{production}</if>
+            <if test="enterpriseScale != null  and enterpriseScale != ''"> and enterprise_scale = #{enterpriseScale}</if>
+            <if test="enterpriseNature != null  and enterpriseNature != ''"> and enterprise_nature = #{enterpriseNature}</if>
+        </where>
+    </select>
+    
+    <select id="selectDistribusionEnterpriseInfoById" parameterType="Long" resultMap="DistribusionEnterpriseInfoResult">
+        <include refid="selectDistribusionEnterpriseInfoVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertDistribusionEnterpriseInfo" parameterType="DistribusionEnterpriseInfo">
+        insert into distribusion_enterprise_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="industry != null and industry != ''">industry,</if>
+            <if test="enterpriseId != null">enterprise_id,</if>
+            <if test="productCategory != null and productCategory != ''">product_category,</if>
+            <if test="production != null and production != ''">production,</if>
+            <if test="enterpriseScale != null and enterpriseScale != ''">enterprise_scale,</if>
+            <if test="enterpriseNature != null and enterpriseNature != ''">enterprise_nature,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="industry != null and industry != ''">#{industry},</if>
+            <if test="enterpriseId != null">#{enterpriseId},</if>
+            <if test="productCategory != null and productCategory != ''">#{productCategory},</if>
+            <if test="production != null and production != ''">#{production},</if>
+            <if test="enterpriseScale != null and enterpriseScale != ''">#{enterpriseScale},</if>
+            <if test="enterpriseNature != null and enterpriseNature != ''">#{enterpriseNature},</if>
+         </trim>
+    </insert>
+
+    <update id="updateDistribusionEnterpriseInfo" parameterType="DistribusionEnterpriseInfo">
+        update distribusion_enterprise_info
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="industry != null and industry != ''">industry = #{industry},</if>
+            <if test="enterpriseId != null">enterprise_id = #{enterpriseId},</if>
+            <if test="productCategory != null and productCategory != ''">product_category = #{productCategory},</if>
+            <if test="production != null and production != ''">production = #{production},</if>
+            <if test="enterpriseScale != null and enterpriseScale != ''">enterprise_scale = #{enterpriseScale},</if>
+            <if test="enterpriseNature != null and enterpriseNature != ''">enterprise_nature = #{enterpriseNature},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteDistribusionEnterpriseInfoById" parameterType="Long">
+        delete from distribusion_enterprise_info where id = #{id}
+    </delete>
+
+    <delete id="deleteDistribusionEnterpriseInfoByIds" parameterType="String">
+        delete from distribusion_enterprise_info where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>
